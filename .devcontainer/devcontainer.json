@@ -1,0 +1,25 @@
+{
+    "name": "Haskell Development",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": "..",
+        "args": {
+            // NOTE: If another Version is required, you can uncomment an ARG and that version will be installed.
+            // "GOLANG_VERSION": "1.26.3",
+            // "DIRENV_VERSION": "2.37.1",
+            // "GHC_VERSION": "9.10.3",
+            // "CABAL_VERSION": "3.12.1.0"
+        }
+    },
+    "remoteUser": "vscode",
+    "workspaceFolder": "/workspaces/haskell",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspaces/haskell,type=bind",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "haskell.haskell",
+                "haskell.language-haskell"
+            ]
+        }
+    }
+}
