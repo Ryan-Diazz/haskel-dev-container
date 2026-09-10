@@ -47,35 +47,27 @@ VS Code will build the development image and open the repository inside the cont
 > [!NOTE]
 > The build will take a few minutes, but after that it will open faster.
 
-## Haskell Toolchain
 
-The container uses [GHCup](https://www.haskell.org/ghcup/) to install and manage the Haskell toolchain.
+## Usage
 
-The default versions are configured as arguments in the `devcontainer.json`.
-To use a different version, change these arguments and rebuild the container.
-
-For example:
-
-```json
-"args": {
-    // "GOLANG_VERSION": "1.26.3",
-    // "DIRENV_VERSION": "2.37.1",
-    "GHC_VERSION": "9.10.3",
-    "CABAL_VERSION": "3.12.1.0"
-}
-```
-
-After changing versions, rebuild using vscode command:
-
+### Project Structure
 ```text
-Dev Containers: Rebuild Container
+/
+├── .devcontainer/
+│   ├── Dockerfile
+│   └── devcontainer.json
+├── src/
+└── README.md
 ```
 
-access using `Ctrl+Shift+P`
+the `src/` folder is meant for the `.hs` files.
 
-## Included Tools
+The exact project structure is not imposed by the container, but newer versions of the container could be pulled if everything is located in `src/` as it is ignored in `.gitignore`.
 
-### GHC
+
+### Included Tools
+
+#### GHC
 
 The Glasgow Haskell Compiler is installed through GHCup.
 
@@ -83,7 +75,7 @@ The Glasgow Haskell Compiler is installed through GHCup.
 ghc --version
 ```
 
-### GHCi
+#### GHCi
 
 The interactive Haskell interpreter is available directly:
 
@@ -98,7 +90,7 @@ ghci> 2 + 2
 4
 ```
 
-### Cabal
+#### Cabal
 
 Cabal is available for building and managing Haskell projects:
 
@@ -124,7 +116,7 @@ Run the project's tests with:
 cabal test
 ```
 
-### Haskell Language Server
+#### Haskell Language Server
 
 HLS is installed and provides VS Code features such as:
 
@@ -138,31 +130,8 @@ HLS is installed and provides VS Code features such as:
 
 The VS Code Haskell extension can use HLS automatically.
 
-### Hoogle
-
-Hoogle provides searchable Haskell documentation.
-
-```bash
-hoogle --version
-```
 
 The local Hoogle database is generated during the Docker image build.
-
-### Ormolu
-
-Ormolu is included as the Haskell code formatter:
-
-```bash
-ormolu --version
-```
-
-### Fast Tags
-
-`fast-tags` can be used to generate tags for navigating Haskell source code.
-
-### Cabal Gild
-
-`cabal-gild` is included for formatting Cabal files.
 
 ## direnv
 
@@ -194,6 +163,33 @@ will output:
 ```text
 hello
 ```
+
+## Haskell Toolchain Versions
+
+The container uses [GHCup](https://www.haskell.org/ghcup/) to install and manage the Haskell toolchain.
+
+The default versions are configured as arguments in the `devcontainer.json`.
+To use a different version, change these arguments and rebuild the container.
+
+For example:
+
+```json
+"args": {
+    // "GOLANG_VERSION": "1.26.3",
+    // "DIRENV_VERSION": "2.37.1",
+    "GHC_VERSION": "9.10.3",
+    "CABAL_VERSION": "3.12.1.0"
+}
+```
+
+After changing versions, rebuild using vscode command:
+
+```text
+Dev Containers: Rebuild Container
+```
+
+access using `Ctrl+Shift+P`
+
 
 ## Container User
 
@@ -239,21 +235,6 @@ docker build \
     -t haskell-dev .
 ```
 
-## Project Structure
-
-A typical repository using this environment looks like:
-
-```text
-/
-├── .devcontainer/
-│   ├── Dockerfile
-│   └── devcontainer.json
-├── src/
-└── README.md
-```
-
-The exact project structure is not imposed by the container, but newer versions of the container could be pulled if everything is located in `src/` as it is ignored in `.gitignore`.
-
 ## Useful Commands
 
 | Command         | Purpose                           |
@@ -265,8 +246,6 @@ The exact project structure is not imposed by the container, but newer versions 
 | `cabal test`    | Run tests                         |
 | `cabal repl`    | Start a project REPL              |
 | `cabal clean`   | Remove build artifacts            |
-| `hoogle`        | Search Haskell documentation      |
-| `ormolu`        | Format Haskell source             |
 | `ghcup list`    | List available toolchain versions |
 | `ghcup tui`     | Open the GHCup interface          |
 | `direnv status` | Show direnv status                |
@@ -283,44 +262,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 ```
 
-Haskell packages can be added to the builder stage:
+Haskell packages can be added in the builder stage with the code block:
 
 ```dockerfile
 RUN cabal install \
-    hoogle \
-    fast-tags \
-    ormolu \
-    cabal-gild \
     <package> \
     --overwrite-policy=always
 ```
 
 ## Troubleshooting
-
-### `ghci` cannot find `gcc`
-
-GHC requires a working C compiler for some operations.
-
-The final image therefore includes:
-
-```text
-gcc
-g++
-```
-
-Check that GCC is available:
-
-```bash
-gcc --version
-```
-
-If you modify the Dockerfile and remove GCC from the final image, GHCi or other GHC operations may fail with errors such as:
-
-```text
-gcc: could not execute: gcc
-```
-
-Rebuild the Dev Container after changing the Dockerfile.
 
 ### HLS is not working in VS Code
 
