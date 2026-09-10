@@ -63,15 +63,10 @@ RUN curl --proto '=https' \
 
 RUN ghcup set ghc ${GHC_VERSION}
 
-# Haskell development tools
-RUN cabal update && \
-    cabal install \
-        hoogle \
-        fast-tags \
-        ormolu \
-        cabal-gild \
-        --overwrite-policy=always && \
-    hoogle generate
+RUN mkdir -p /home/vscode/.local && \
+    mkdir -p /home/vscode/.cabal && \
+    mkdir -p /home/vscode/.ghcup
+
 
 # Cabal configuration
 RUN mkdir -p /home/vscode/.cabal && \
@@ -92,6 +87,7 @@ ARG CABAL_VERSION=3.12.1.0
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Only runtime dependencies required by the Haskell binaries.
+# Only runtime dependencies required by the Haskell binaries.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     ca-certificates \
@@ -99,10 +95,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     git \
     libffi8 \
+    libffi-dev \
     libgmp10 \
+    libgmp-dev \
     libncurses6 \
     libtinfo6 \
     zlib1g \
+    zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create vscode user.
