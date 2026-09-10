@@ -79,7 +79,7 @@ RUN mkdir -p /home/vscode/.cabal && \
 # ============================================================
 # Final: Haskell devcontainer
 # ============================================================
-FROM debian:bookworm-slim
+FROM debian:bookworm-slim as haskell-runtime
 
 ARG GHC_VERSION=9.10.3
 ARG CABAL_VERSION=3.12.1.0
